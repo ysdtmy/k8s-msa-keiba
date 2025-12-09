@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supervisor
+  labels:
+    app: supervisor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supervisor
+  template:
+    metadata:
+      labels:
+        app: supervisor
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "supervisor"
+        dapr.io/app-port: "8080"
+    spec:
+      containers:
+      - name: supervisor
+        image: supervisor:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: APP_PORT
+          value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supervisor
+spec:
+  selector:
+    app: supervisor
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

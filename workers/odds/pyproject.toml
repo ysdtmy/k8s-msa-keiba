@@ -1,0 +1,11 @@
+[project]
+name = "odds"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dapr>=1.16.0",
+    "fastapi[standard]>=0.124.0",
+    "uvicorn>=0.38.0",
+]

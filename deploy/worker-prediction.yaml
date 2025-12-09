@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-prediction
+  labels:
+    app: worker-prediction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker-prediction
+  template:
+    metadata:
+      labels:
+        app: worker-prediction
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "worker-prediction"
+        dapr.io/app-port: "8083"
+    spec:
+      containers:
+      - name: worker-prediction
+        image: worker-prediction:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8083
+        env:
+        - name: APP_PORT
+          value: "8083"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-prediction
+spec:
+  selector:
+    app: worker-prediction
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8083

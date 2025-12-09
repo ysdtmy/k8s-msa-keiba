@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-race-data
+  labels:
+    app: worker-race-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker-race-data
+  template:
+    metadata:
+      labels:
+        app: worker-race-data
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "worker-race-data"
+        dapr.io/app-port: "8081"
+    spec:
+      containers:
+      - name: worker-race-data
+        image: worker-race-data:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        env:
+        - name: APP_PORT
+          value: "8081"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-race-data
+spec:
+  selector:
+    app: worker-race-data
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8081
